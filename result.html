@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prediction Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="result-page {% if prediction == 1 %}result-positive{% else %}result-negative{% endif %}">
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="/" class="nav-back">← Back to Report</a>
+    <span class="nav-title">Prediction Result</span>
+  </nav>
+
+  <div class="result-wrapper">
+
+    <!-- ── Result card ── -->
+    <div class="result-card {% if prediction == 1 %}card-danger{% else %}card-safe{% endif %}">
+
+      <div class="result-icon-ring">
+        {% if prediction == 1 %}
+          <span class="result-emoji">⚠️</span>
+        {% else %}
+          <span class="result-emoji">✅</span>
+        {% endif %}
+      </div>
+
+      <h1 class="result-headline">{{ result_label }}</h1>
+
+      <div class="confidence-block">
+        <div class="confidence-label">Model Confidence</div>
+        <div class="confidence-bar-wrap">
+          <div class="confidence-bar" style="width: {{ confidence }}%"></div>
+        </div>
+        <div class="confidence-pct">{{ confidence }}%</div>
+      </div>
+
+      <div class="risk-badge risk-{{ risk_level.lower().replace(' ', '-') }}">
+        {{ risk_level }}
+      </div>
+
+      {% if prediction == 1 %}
+      <p class="result-message danger-msg">
+        Our model indicates a <strong>high likelihood of diabetes</strong> based on the
+        values you provided. Please consult your doctor for clinical confirmation and
+        professional advice.
+      </p>
+      {% else %}
+      <p class="result-message safe-msg">
+        Our model indicates a <strong>low likelihood of diabetes</strong> based on the
+        values you provided. Maintaining a healthy lifestyle helps keep this risk low.
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- ── Input summary ── -->
+    <div class="summary-card">
+      <h3>Your Submitted Values</h3>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="s-label">Gender</span>
+          <span class="s-val">{{ form_data.get('gender', '—') }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">Age</span>
+          <span class="s-val">{{ form_data.get('age', '—') }} yrs</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">BMI</span>
+          <span class="s-val">{{ form_data.get('bmi', '—') }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">HbA1c Level</span>
+          <span class="s-val">{{ form_data.get('HbA1c_level', '—') }} %</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">Blood Glucose</span>
+          <span class="s-val">{{ form_data.get('blood_glucose_level', '—') }} mg/dL</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">Hypertension</span>
+          <span class="s-val">{{ 'Yes' if form_data.get('hypertension') == '1' else 'No' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">Heart Disease</span>
+          <span class="s-val">{{ 'Yes' if form_data.get('heart_disease') == '1' else 'No' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">Smoking History</span>
+          <span class="s-val">{{ form_data.get('smoking_history', '—') | capitalize }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Recommendations ── -->
+    {% if prediction == 1 %}
+    <div class="reco-card reco-danger">
+      <h3>Recommended Next Steps</h3>
+      <ul>
+        <li>🏥 Schedule an appointment with your doctor for a formal HbA1c and fasting glucose test.</li>
+        <li>🥗 Adopt a low-glycaemic diet — reduce refined carbohydrates and sugary drinks.</li>
+        <li>🏃 Aim for at least 150 minutes of moderate aerobic exercise per week.</li>
+        <li>⚖️ If overweight (BMI &gt; 25), even a 5–7 % weight loss significantly lowers risk.</li>
+        <li>🚭 If you smoke, seek cessation support — smoking worsens insulin resistance.</li>
+      </ul>
+    </div>
+    {% else %}
+    <div class="reco-card reco-safe">
+      <h3>Keep Up the Good Work 🌱</h3>
+      <ul>
+        <li>✅ Maintain a balanced diet rich in vegetables, whole grains, and lean proteins.</li>
+        <li>✅ Stay physically active — at least 30 minutes of exercise most days.</li>
+        <li>✅ Monitor your blood glucose periodically, especially if you have family history.</li>
+        <li>✅ Limit alcohol consumption and avoid tobacco products.</li>
+        <li>✅ Schedule annual check-ups to catch any changes early.</li>
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- ── Disclaimer ── -->
+    <div class="disclaimer-box">
+      <strong>⚠ Medical Disclaimer:</strong>
+      This prediction is generated by a machine learning model trained on publicly available data
+      and is intended <em>solely for educational purposes</em>. It is not a medical diagnosis.
+      Always seek professional medical advice from a licensed healthcare provider.
+    </div>
+
+    <!-- ── Actions ── -->
+    <div class="result-actions">
+      <a href="/predict" class="btn btn-primary">🔄 Make Another Prediction</a>
+      <a href="/"        class="btn btn-outline">📊 View Full Report</a>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <p>© 2024 Group Project — University of Punjab</p>
+  </footer>
+
+</body>
+</html>

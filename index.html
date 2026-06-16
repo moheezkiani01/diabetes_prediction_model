@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetes Analysis Report</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="report-page">
+
+  <!-- ══════════════════  HERO / HEADER  ══════════════════ -->
+  <header class="site-header">
+    <div class="header-badge">Machine Learning · Healthcare</div>
+    <h1 class="site-title">Diabetes Prediction<br><span class="accent">Analysis Report</span></h1>
+    <p class="site-subtitle">
+      A full end-to-end data science project covering EDA, feature engineering,
+      class balancing via SMOTE, and multi-model evaluation.
+    </p>
+    <a href="/predict" class="btn btn-primary pulse">
+      🩺 Try Live Prediction →
+    </a>
+  </header>
+
+  <!-- ══════════════════  GROUP MEMBERS CARD  ══════════════════ -->
+  <section class="container section-gap">
+    <h2 class="section-heading">Project Team</h2>
+    <div class="team-grid">
+      <div class="team-card highlight-card">
+        <div class="team-icon">👤</div>
+        <h3>Hafiz AbdulRehman Chohan</h3>
+        <span class="roll-badge">Roll No: 084</span>
+        <p class="role-tag">Exploratory Data Analysis · Statistical Tests</p>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">👤</div>
+        <h3>Member 2</h3>
+        <span class="roll-badge">Feature Engineering</span>
+        <p class="role-tag">Encoding · Outlier Handling · Scaling</p>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">👤</div>
+        <h3>Member 3</h3>
+        <span class="roll-badge">Machine Learning</span>
+        <p class="role-tag">Model Training · SMOTE · Evaluation</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════  DATASET OVERVIEW  ══════════════════ -->
+  <section class="container section-gap">
+    <h2 class="section-heading">Dataset Overview</h2>
+    <div class="stat-strip">
+      <div class="stat-item"><span class="stat-num">100,000</span><span class="stat-label">Records</span></div>
+      <div class="stat-item"><span class="stat-num">9</span><span class="stat-label">Features</span></div>
+      <div class="stat-item"><span class="stat-num">8.5%</span><span class="stat-label">Diabetic Cases</span></div>
+      <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">Missing Values</span></div>
+    </div>
+    <p class="prose">
+      The dataset originates from the Kaggle <em>Diabetes Prediction Dataset</em> and contains
+      demographic, behavioural, and clinical features such as age, BMI, blood glucose level,
+      HbA1c level, smoking history, hypertension, and heart disease status.
+      The binary target variable <code>diabetes</code> is highly imbalanced (≈ 91.5 % negative),
+      which motivated our use of SMOTE during model training.
+    </p>
+  </section>
+
+  <!-- ══════════════════  MEMBER 1 — EDA  ══════════════════ -->
+  <section class="container section-gap">
+    <div class="member-label">Member 1 — Hafiz AbdulRehman Chohan (084)</div>
+    <h2 class="section-heading">Exploratory Data Analysis</h2>
+
+    <div class="graph-block">
+      <h3 class="graph-title">Feature Distributions</h3>
+      <p class="graph-desc">
+        Histograms show that blood glucose and HbA1c levels are right-skewed,
+        indicating a concentration of values at the lower end with a long tail toward higher readings — typical for a population where most individuals are not diabetic.
+      </p>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/eda_histograms.png') }}"
+             alt="Feature Distributions Histogram" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="graph-block">
+      <h3 class="graph-title">Outlier Detection — Box Plots</h3>
+      <p class="graph-desc">
+        BMI and blood glucose level contain significant outliers. These were capped
+        using the IQR method in the feature engineering phase to prevent them from
+        distorting model training.
+      </p>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/eda_boxplots.png') }}"
+             alt="Box Plots" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="graph-block two-col">
+      <div>
+        <h3 class="graph-title">Gender vs Diabetes</h3>
+        <p class="graph-desc">
+          The diabetic-to-non-diabetic ratio is broadly similar across genders,
+          suggesting gender alone is a weak predictor.
+        </p>
+        <div class="img-frame">
+          <img src="{{ url_for('static', filename='images/eda_gender_diabetes.png') }}"
+               alt="Gender vs Diabetes" loading="lazy" />
+        </div>
+      </div>
+      <div>
+        <h3 class="graph-title">Smoking History vs Diabetes</h3>
+        <p class="graph-desc">
+          Current and former smokers show a slightly elevated rate of diabetes,
+          consistent with clinical literature linking smoking to insulin resistance.
+        </p>
+        <div class="img-frame">
+          <img src="{{ url_for('static', filename='images/eda_smoking_diabetes.png') }}"
+               alt="Smoking vs Diabetes" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <div class="graph-block">
+      <h3 class="graph-title">Correlation Heatmap</h3>
+      <p class="graph-desc">
+        Blood glucose level (<em>r</em> ≈ 0.42) and HbA1c level (<em>r</em> ≈ 0.40)
+        show the strongest correlations with diabetes, validating their clinical significance.
+        BMI and age show moderate positive correlations.
+      </p>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/eda_correlation_heatmap.png') }}"
+             alt="Correlation Heatmap" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>🔍 Key Insights</h4>
+      <ul>
+        <li>Blood glucose level is the strongest single predictor of diabetes.</li>
+        <li>HbA1c level is a close second and highly clinically meaningful.</li>
+        <li>BMI contains significant outliers that required capping.</li>
+        <li>Age shows moderate positive correlation with diabetes onset.</li>
+        <li>Smoking history contributes a weak-to-moderate signal.</li>
+        <li>The dataset is clean with zero missing values.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════  MEMBER 2 — FEATURE ENGINEERING  ══════════════════ -->
+  <section class="container section-gap">
+    <div class="member-label">Member 2 — Feature Engineering</div>
+    <h2 class="section-heading">Pre-processing Pipeline</h2>
+
+    <div class="pipeline-steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div>
+          <h4>Label Encoding</h4>
+          <p>Gender encoded as Female=0, Male=1, Other=2 using <code>LabelEncoder</code>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div>
+          <h4>One-Hot Encoding</h4>
+          <p>Smoking history (6 categories) expanded with <code>pd.get_dummies</code> to avoid ordinal assumptions.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div>
+          <h4>IQR Outlier Capping</h4>
+          <p>BMI and blood glucose clipped to [Q1 − 1.5·IQR, Q3 + 1.5·IQR] to limit leverage of extreme values.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div>
+          <h4>Feature Selection</h4>
+          <p>Retained only features with |correlation with target| &gt; 0.05, reducing noise dimensionality.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="graph-block">
+      <h3 class="graph-title">SMOTE — Class Balance</h3>
+      <p class="graph-desc">
+        The training set was severely imbalanced (≈ 8.5 % positive).
+        SMOTE synthesised minority-class samples until both classes were equal,
+        ensuring models did not simply predict "no diabetes" every time.
+      </p>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/m2_smote_balance.png') }}"
+             alt="SMOTE Balance" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════  MEMBER 3 — ML RESULTS  ══════════════════ -->
+  <section class="container section-gap">
+    <div class="member-label">Member 3 — Machine Learning & Evaluation</div>
+    <h2 class="section-heading">Model Training & Comparison</h2>
+
+    <p class="prose">
+      Four classifiers were evaluated across three dataset versions (unscaled, standardised, normalised).
+      Because misdiagnosing a diabetic patient as healthy is far more dangerous than the reverse,
+      <strong>Recall</strong> was used as the primary selection criterion.
+    </p>
+
+    <div class="graph-block">
+      <h3 class="graph-title">Accuracy · Recall · F1 Across All Configurations</h3>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/m3_model_comparison.png') }}"
+             alt="Model Comparison" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="graph-block">
+      <h3 class="graph-title">Confusion Matrices — Best Model</h3>
+      <p class="graph-desc">
+        Confusion matrices across all three dataset versions for the best-performing model,
+        showing the trade-off between True Positives and False Negatives.
+      </p>
+      <div class="img-frame">
+        <img src="{{ url_for('static', filename='images/m3_confusion_matrices.png') }}"
+             alt="Confusion Matrices" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="insight-box success-box">
+      <h4>🏆 Best Model</h4>
+      <p>
+        <strong>Random Forest</strong> on the standardised dataset achieved the highest recall
+        for the diabetic class while maintaining strong overall accuracy and F1-score —
+        making it the recommended model for deployment.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════  CTA  ══════════════════ -->
+  <section class="cta-section">
+    <h2>Ready to make a prediction?</h2>
+    <p>Enter your medical details and our trained model will assess your diabetes risk.</p>
+    <a href="/predict" class="btn btn-primary">🩺 Go to Prediction Form →</a>
+  </section>
+
+  <footer class="site-footer">
+    <p>© 2024 Group Project — University of Punjab &nbsp;|&nbsp; Data Science Course</p>
+    <p>Hafiz AbdulRehman Chohan (084) &nbsp;·&nbsp; Member 2 &nbsp;·&nbsp; Member 3</p>
+  </footer>
+
+</body>
+</html>

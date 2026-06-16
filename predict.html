@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetes Risk Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="form-page">
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="/" class="nav-back">← Back to Report</a>
+    <span class="nav-title">Diabetes Risk Assessment</span>
+  </nav>
+
+  <div class="form-wrapper">
+
+    <div class="form-hero">
+      <div class="form-icon">🩺</div>
+      <h1>Diabetes Risk Prediction</h1>
+      <p>Fill in your clinical details below. Our machine learning model will
+         assess your risk based on patterns learned from 100,000 patient records.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert-error">
+      <strong>⚠ Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="/predict" method="POST" class="prediction-form" novalidate>
+
+      <!-- ── Section 1: Demographics ── -->
+      <div class="form-section">
+        <h2 class="form-section-title">
+          <span class="form-section-num">01</span> Demographics
+        </h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="">— Select —</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="age">Age <span class="unit">(years)</span></label>
+            <input type="number" id="age" name="age"
+                   min="1" max="120" step="1" placeholder="e.g. 45" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 2: Medical History ── -->
+      <div class="form-section">
+        <h2 class="form-section-title">
+          <span class="form-section-num">02</span> Medical History
+        </h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="hypertension">Hypertension</label>
+            <select id="hypertension" name="hypertension" required>
+              <option value="">— Select —</option>
+              <option value="1">Yes — I have hypertension</option>
+              <option value="0">No — I do not</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="heart_disease">Heart Disease</label>
+            <select id="heart_disease" name="heart_disease" required>
+              <option value="">— Select —</option>
+              <option value="1">Yes — I have heart disease</option>
+              <option value="0">No — I do not</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="smoking_history">Smoking History</label>
+            <select id="smoking_history" name="smoking_history" required>
+              <option value="">— Select —</option>
+              <option value="never">Never smoked</option>
+              <option value="former">Former smoker</option>
+              <option value="current">Current smoker</option>
+              <option value="ever">Ever smoked (general)</option>
+              <option value="not current">Not currently smoking</option>
+              <option value="no_info">No information / prefer not to say</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 3: Clinical Measurements ── -->
+      <div class="form-section">
+        <h2 class="form-section-title">
+          <span class="form-section-num">03</span> Clinical Measurements
+        </h2>
+
+        <div class="form-row three-col">
+          <div class="form-group">
+            <label for="bmi">BMI <span class="unit">(kg/m²)</span></label>
+            <input type="number" id="bmi" name="bmi"
+                   min="10" max="70" step="0.1" placeholder="e.g. 25.0" required />
+            <small class="field-hint">Normal: 18.5 – 24.9</small>
+          </div>
+          <div class="form-group">
+            <label for="HbA1c_level">HbA1c Level <span class="unit">(%)</span></label>
+            <input type="number" id="HbA1c_level" name="HbA1c_level"
+                   min="3" max="15" step="0.1" placeholder="e.g. 5.5" required />
+            <small class="field-hint">Normal: &lt; 5.7 % &nbsp;|&nbsp; Diabetic: ≥ 6.5 %</small>
+          </div>
+          <div class="form-group">
+            <label for="blood_glucose_level">Blood Glucose <span class="unit">(mg/dL)</span></label>
+            <input type="number" id="blood_glucose_level" name="blood_glucose_level"
+                   min="50" max="400" step="1" placeholder="e.g. 100" required />
+            <small class="field-hint">Normal (fasting): 70 – 99 mg/dL</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Reference ranges ── -->
+      <div class="reference-box">
+        <h4>📋 Quick Reference Ranges</h4>
+        <div class="ref-grid">
+          <div><strong>BMI</strong><br>Normal: 18.5–24.9 &nbsp;|&nbsp; Overweight: 25–29.9 &nbsp;|&nbsp; Obese: ≥30</div>
+          <div><strong>HbA1c</strong><br>Normal: &lt;5.7% &nbsp;|&nbsp; Prediabetes: 5.7–6.4% &nbsp;|&nbsp; Diabetes: ≥6.5%</div>
+          <div><strong>Blood Glucose</strong><br>Normal fasting: &lt;100 &nbsp;|&nbsp; Prediabetes: 100–125 &nbsp;|&nbsp; Diabetes: ≥126 mg/dL</div>
+        </div>
+      </div>
+
+      <!-- ── Submit ── -->
+      <div class="form-submit">
+        <button type="submit" class="btn btn-primary btn-large">
+          Analyse My Risk →
+        </button>
+        <p class="disclaimer">
+          ⚠ This tool is for <strong>educational purposes only</strong> and does not constitute
+          medical advice. Always consult a qualified healthcare professional.
+        </p>
+      </div>
+
+    </form>
+  </div>
+
+  <footer class="site-footer">
+    <p>© 2024 Group Project — University of Punjab</p>
+  </footer>
+
+</body>
+</html>
