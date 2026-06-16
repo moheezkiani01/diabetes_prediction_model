@@ -1,6 +1,6 @@
 # 🩺 Diabetes Prediction — ML Web Application
 
-> A full end-to-end data science and machine learning project developed as a group assignment at the **University of Punjab**. The application trains multiple classifiers on 100,000 patient records and serves live diabetes risk predictions through a Flask web interface.
+> A full end-to-end data science and machine learning project developed as a group assignment at the **Superior University Lahore**. The application trains multiple classifiers on 100,000 patient records and serves live diabetes risk predictions through a Flask web interface.
 
 ## 📁 Project Structure
 
